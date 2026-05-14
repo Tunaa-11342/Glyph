@@ -1,0 +1,77 @@
+{
+  "_readme": "BioSite Gear Database — Admin file. Add gear items here. Users select from this list.",
+  "_format": {
+    "id": "unique-slug (lowercase, hyphens)",
+    "name": "Display Name",
+    "brand": "Brand name",
+    "type": "mouse | keyboard | monitor | headset | mousepad",
+    "specs": { "any key": "any value" }
+  },
+
+  "mice": [
+    { "id": "logitech-gproX-superlight2", "name": "G Pro X Superlight 2", "brand": "Logitech", "type": "mouse", "specs": { "weight": "60g", "sensor": "HERO 25K", "buttons": "5" } },
+    { "id": "logitech-gproX-superlight", "name": "G Pro X Superlight", "brand": "Logitech", "type": "mouse", "specs": { "weight": "61g", "sensor": "HERO 25K", "buttons": "5" } },
+    { "id": "logitech-g303", "name": "G303 Shroud Edition", "brand": "Logitech", "type": "mouse", "specs": { "weight": "75g", "sensor": "HERO 25K" } },
+    { "id": "razer-deathadder-v3", "name": "DeathAdder V3", "brand": "Razer", "type": "mouse", "specs": { "weight": "59g", "sensor": "Focus Pro 30K" } },
+    { "id": "razer-viper-v3-hud", "name": "Viper V3 HyperSpeed", "brand": "Razer", "type": "mouse", "specs": { "weight": "82g", "sensor": "Razer HyperSpeed" } },
+    { "id": "razer-viper-ultimate", "name": "Viper Ultimate", "brand": "Razer", "type": "mouse", "specs": { "weight": "74g", "sensor": "Focus+ 20K" } },
+    { "id": "finalmouse-starlight12", "name": "Starlight-12 Phantom", "brand": "Finalmouse", "type": "mouse", "specs": { "weight": "42g", "sensor": "Finalmouse Crucible" } },
+    { "id": "finalmouse-ultralight2", "name": "ULtralight 2 - Cape Town", "brand": "Finalmouse", "type": "mouse", "specs": { "weight": "47g" } },
+    { "id": "zowie-ec2c", "name": "EC2-C", "brand": "BenQ Zowie", "type": "mouse", "specs": { "weight": "73g", "sensor": "3360" } },
+    { "id": "zowie-fk2b", "name": "FK2-B", "brand": "BenQ Zowie", "type": "mouse", "specs": { "weight": "79g" } },
+    { "id": "zowie-s2c", "name": "S2-C", "brand": "BenQ Zowie", "type": "mouse", "specs": { "weight": "82g" } },
+    { "id": "endgame-gear-xm1r", "name": "XM1r", "brand": "Endgame Gear", "type": "mouse", "specs": { "weight": "70g", "sensor": "PixArt 3370" } },
+    { "id": "pulsar-xlite-v3", "name": "Xlite V3", "brand": "Pulsar", "type": "mouse", "specs": { "weight": "55g", "sensor": "PixArt 3395" } },
+    { "id": "vaxee-outset-ax", "name": "Outset AX", "brand": "Vaxee", "type": "mouse", "specs": { "weight": "74g", "sensor": "3370" } },
+    { "id": "lamzu-atlantis", "name": "Atlantis", "brand": "Lamzu", "type": "mouse", "specs": { "weight": "55g", "sensor": "PixArt 3395" } },
+    { "id": "attack-shark-x6", "name": "X6", "brand": "Attack Shark", "type": "mouse", "specs": { "weight": "68g" } }
+  ],
+
+  "keyboards": [
+    { "id": "wooting-60he", "name": "Wooting 60HE", "brand": "Wooting", "type": "keyboard", "specs": { "layout": "60%", "switch": "Lekker (Hall Effect)", "connection": "Wired" } },
+    { "id": "wooting-two-he", "name": "Wooting Two HE", "brand": "Wooting", "type": "keyboard", "specs": { "layout": "TKL", "switch": "Lekker (Hall Effect)", "connection": "Wired" } },
+    { "id": "ducky-one3-mini", "name": "One 3 Mini", "brand": "Ducky", "type": "keyboard", "specs": { "layout": "60%" } },
+    { "id": "ducky-one3-tkl", "name": "One 3 TKL", "brand": "Ducky", "type": "keyboard", "specs": { "layout": "TKL" } },
+    { "id": "hhkb-pro2", "name": "Professional 2", "brand": "HHKB", "type": "keyboard", "specs": { "layout": "60%", "switch": "Topre 45g" } },
+    { "id": "mode-eighty", "name": "Eighty", "brand": "Mode", "type": "keyboard", "specs": { "layout": "TKL" } },
+    { "id": "keychron-q1", "name": "Q1 Pro", "brand": "Keychron", "type": "keyboard", "specs": { "layout": "75%", "connection": "Wireless/Wired" } },
+    { "id": "razer-huntsman-mini", "name": "Huntsman Mini", "brand": "Razer", "type": "keyboard", "specs": { "layout": "60%", "switch": "Razer Optical" } },
+    { "id": "logitech-gpro-x", "name": "G Pro X", "brand": "Logitech", "type": "keyboard", "specs": { "layout": "TKL", "switch": "GX Blue/Red/Brown" } },
+    { "id": "apex-pro-mini", "name": "Apex Pro Mini", "brand": "SteelSeries", "type": "keyboard", "specs": { "layout": "60%", "switch": "OmniPoint Adjustable" } }
+  ],
+
+  "monitors": [
+    { "id": "asus-rog-swift-360", "name": "ROG Swift 360Hz PG259QN", "brand": "ASUS", "type": "monitor", "specs": { "size": "24.5\"", "resolution": "1080p", "hz": "360", "panel": "IPS" } },
+    { "id": "asus-rog-swift-pg27AQN", "name": "ROG Swift PG27AQN", "brand": "ASUS", "type": "monitor", "specs": { "size": "27\"", "resolution": "1440p", "hz": "360", "panel": "IPS" } },
+    { "id": "lg-27gp850", "name": "27GP850-B UltraGear", "brand": "LG", "type": "monitor", "specs": { "size": "27\"", "resolution": "1440p", "hz": "165", "panel": "Nano IPS" } },
+    { "id": "lg-27gn750", "name": "27GN750-B UltraGear", "brand": "LG", "type": "monitor", "specs": { "size": "27\"", "resolution": "1080p", "hz": "240", "panel": "IPS" } },
+    { "id": "benq-xl2546k", "name": "ZOWIE XL2546K", "brand": "BenQ", "type": "monitor", "specs": { "size": "24.5\"", "resolution": "1080p", "hz": "240", "panel": "TN" } },
+    { "id": "benq-xl2411k", "name": "ZOWIE XL2411K", "brand": "BenQ", "type": "monitor", "specs": { "size": "24\"", "resolution": "1080p", "hz": "144", "panel": "TN" } },
+    { "id": "alienware-aw2523hf", "name": "AW2523HF", "brand": "Alienware", "type": "monitor", "specs": { "size": "24.5\"", "resolution": "1080p", "hz": "360", "panel": "IPS" } },
+    { "id": "samsung-g7", "name": "Odyssey G7 27\"", "brand": "Samsung", "type": "monitor", "specs": { "size": "27\"", "resolution": "1440p", "hz": "240", "panel": "VA" } },
+    { "id": "msi-mag274qrf", "name": "MAG274QRF-QD", "brand": "MSI", "type": "monitor", "specs": { "size": "27\"", "resolution": "1440p", "hz": "165", "panel": "IPS" } }
+  ],
+
+  "headsets": [
+    { "id": "hyperx-cloud-alpha", "name": "Cloud Alpha", "brand": "HyperX", "type": "headset", "specs": { "type": "Wired", "driver": "50mm" } },
+    { "id": "hyperx-cloud-ii", "name": "Cloud II", "brand": "HyperX", "type": "headset", "specs": { "type": "Wired", "surround": "7.1 virtual" } },
+    { "id": "steelseries-arctis-nova-pro", "name": "Arctis Nova Pro", "brand": "SteelSeries", "type": "headset", "specs": { "type": "Wired/Wireless" } },
+    { "id": "steelseries-arctis-7plus", "name": "Arctis 7+", "brand": "SteelSeries", "type": "headset", "specs": { "type": "Wireless", "battery": "30hr" } },
+    { "id": "logitech-gpro-x2", "name": "G Pro X 2 Lightspeed", "brand": "Logitech", "type": "headset", "specs": { "type": "Wireless" } },
+    { "id": "razer-blackshark-v2", "name": "BlackShark V2", "brand": "Razer", "type": "headset", "specs": { "type": "Wired", "driver": "TriForce 50mm" } },
+    { "id": "beyerdynamic-dt770", "name": "DT 770 Pro 80Ω", "brand": "Beyerdynamic", "type": "headset", "specs": { "type": "Wired", "driver": "45mm" } },
+    { "id": "audio-technica-ath-m50x", "name": "ATH-M50x", "brand": "Audio-Technica", "type": "headset", "specs": { "type": "Wired" } }
+  ],
+
+  "mousepads": [
+    { "id": "artisan-zero-xl", "name": "ZERO XL", "brand": "Artisan", "type": "mousepad", "specs": { "surface": "Soft", "size": "XL" } },
+    { "id": "artisan-hien-xl", "name": "HIEN XL", "brand": "Artisan", "type": "mousepad", "specs": { "surface": "Mid", "size": "XL" } },
+    { "id": "logitech-gpro-xl", "name": "G640 Gaming Mousepad", "brand": "Logitech", "type": "mousepad", "specs": { "surface": "Cloth", "size": "XL" } },
+    { "id": "steelseries-qck-heavy", "name": "QcK Heavy XXL", "brand": "SteelSeries", "type": "mousepad", "specs": { "surface": "Micro-Woven Cloth" } },
+    { "id": "razer-gigantus-v2", "name": "Gigantus V2 XXL", "brand": "Razer", "type": "mousepad", "specs": { "surface": "Micro-textured cloth" } },
+    { "id": "zowie-gtf-x", "name": "GTF-X", "brand": "BenQ Zowie", "type": "mousepad", "specs": { "surface": "Speed" } },
+    { "id": "puretrak-talent", "name": "Talent", "brand": "PureTrak", "type": "mousepad", "specs": { "surface": "Cloth" } },
+    { "id": "endgame-gear-mpc890", "name": "MPC890 Cordura", "brand": "Endgame Gear", "type": "mousepad", "specs": { "surface": "Cordura fabric" } },
+    { "id": "dream-machines-dm-fly-xl", "name": "DM Fly XL", "brand": "Dream Machines", "type": "mousepad", "specs": { "surface": "Speed" } }
+  ]
+}

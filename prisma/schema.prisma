@@ -1,0 +1,172 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  clerkId     String   @unique
+  username    String   @unique
+  email       String   @unique
+  displayName String?
+  bio         String?
+  avatar      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  profile      Profile?
+  gamerProfile GamerProfile?
+  links      Link[]
+  analytics  Analytics[]
+}
+
+model Profile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Theme
+  bgColor      String  @default("#0a0a0a")
+  bgImage      String?
+  bgVideo      String?
+  bgType       String  @default("color") // color | image | video | gradient
+  bgGradient   String?
+  accentColor   String @default("#8b5cf6")
+  textColor     String @default("#ffffff")
+  usernameColor String @default("#ffffff")
+  handleColor   String @default("rgba(255,255,255,0.4)")
+  bioColor      String @default("rgba(255,255,255,0.7)")
+  linkTextColor String @default("#ffffff")
+  linkBgColor   String @default("rgba(255,255,255,0.08)")
+  linkIconColor String @default("#8b5cf6")
+  fontFamily    String @default("Inter")
+  avatarUrl     String?
+  cardOpacity  Float   @default(0.8)
+  cardBlur     Float   @default(10)
+  borderRadius Int     @default(12)
+
+  // Audio
+  audioUrl     String?
+  audioName    String?
+  audioVolume  Float   @default(0.5)
+  audioAutoplay Boolean @default(false)
+
+  // Effects
+  particlesEnabled Boolean @default(false)
+  glowEnabled      Boolean @default(false)
+  glowColor        String  @default("#8b5cf6")
+  animationStyle   String  @default("fade") // fade | slide | bounce | none
+  customCss        String? @db.Text
+  bgEffect         String  @default("none") // none | plasma | snowflakes | aurora | rain | nighttime | oldtv
+  bgBlur           Int     @default(0)      // background blur amount px
+
+  // Username effects
+  usernameEffect   String  @default("none") // none | shuffle | typewriter | fuzzy | rainbow | sparkles_w | sparkles_g | glitch | neon
+
+  // Other
+  monochrome       Boolean @default(false)
+  animatedTitle    Boolean @default(false)
+  swapBoxColors    Boolean @default(false)
+  iconColor        String  @default("#ffffff")
+
+  // Layout
+  layoutStyle  String  @default("centered") // centered | left | right
+  profileBlur  Int     @default(0)
+
+  // Social
+  location     String?
+  discordUser  String?
+
+  viewCount    Int     @default(0)
+  updatedAt    DateTime @updatedAt
+}
+
+model Link {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title     String
+  url       String
+  icon      String   @default("link")
+  color     String?
+  bgColor   String?
+  order     Int      @default(0)
+  enabled   Boolean  @default(true)
+  clickCount Int     @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type      String   // pageview | link_click
+  linkId    String?
+  
+  // Device info
+  device    String?  // mobile | tablet | desktop
+  browser   String?
+  os        String?
+  country   String?
+  city      String?
+  
+  // Session
+  sessionId String?
+  referrer  String?
+  
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, createdAt])
+  @@index([type])
+}
+
+model GamerProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Valorant
+  valorantId      String?
+  valorantRegion  String  @default("eu")   // eu | na | ap | kr | latam | br
+  valorantEnabled Boolean @default(false)
+  valRank         String?
+  valRankTier     String?
+  valRR           Int?
+  valWinRate      String?
+  valKD           String?
+  valHS           String?
+  valTrackerUrl   String?
+  valCachedAt     DateTime?
+
+  // Stat card style
+  statCardBg      String  @default("rgba(255,255,255,0.06)")
+  statCardAccent  String  @default("#ff4655")
+  statCardGlow    Boolean @default(false)
+
+  // Gear
+  gearEnabled  Boolean @default(false)
+  mouse        String?
+  mouseDpi     String?
+  mouseSens    String?
+  keyboard     String?
+  keySwitches  String?
+  monitor      String?
+  monitorHz    String?
+  monitorRes   String?
+  headset      String?
+  mousepad     String?
+
+  updatedAt DateTime @updatedAt
+}
