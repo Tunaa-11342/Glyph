@@ -2,14 +2,26 @@ import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-export async function POST() {
+export async function POST(req: Request) {
   const { userId } = auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const user = await prisma.user.findUnique({ where: { clerkId: userId } })
   if (!user) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-  const gp = await prisma.gamerProfile.findUnique({ where: { userId: user.id } })
+  const body = await req.json().catch(() => ({}))
+  const gp = await prisma.gamerProfile.upsert({
+    where: { userId: user.id },
+    create: {
+      userId: user.id,
+      valorantId: typeof body.valorantId === 'string' ? body.valorantId.trim() : '',
+      valorantRegion: typeof body.valorantRegion === 'string' ? body.valorantRegion : 'ap',
+    },
+    update: {
+      ...(typeof body.valorantId === 'string' ? { valorantId: body.valorantId.trim() } : {}),
+      ...(typeof body.valorantRegion === 'string' ? { valorantRegion: body.valorantRegion } : {}),
+    },
+  })
   if (!gp?.valorantId) return NextResponse.json({ error: 'No Valorant ID' }, { status: 400 })
 
   // ── Rate limit ────────────────────────────────────────────────────────────
@@ -25,7 +37,7 @@ export async function POST() {
   const [name, tag] = parts
   const encName = encodeURIComponent(name)
   const encTag  = encodeURIComponent(tag)
-  const region  = (gp as any).valorantRegion ?? 'eu'
+  let region = (gp as any).valorantRegion ?? 'ap'
 
   const H: HeadersInit = {
     'Authorization': apiKey,
@@ -50,8 +62,7 @@ export async function POST() {
     if (acctRes.ok) {
       const acctData = await acctRes.json()
       puuid = acctData?.data?.puuid ?? null
-      // Use the account's actual region if available (more accurate than user-selected)
-      // but keep user-selected as fallback
+      region = acctData?.data?.region ?? region
     } else {
       console.warn('[Henrik Account]', acctRes.status, await acctRes.text().catch(() => ''))
     }
@@ -130,12 +141,10 @@ export async function POST() {
             // Check if player's team won
             // me.team: "Red" | "Blue"
             // match.teams: [ { team_id: "Red"|"Blue", won: true|false }, ... ]
-            const teams: any[] = match?.teams ?? []
-            const myTeamId = me.team // "Red" or "Blue"
-            const myTeam = teams.find((t: any) =>
-              t.team_id?.toLowerCase() === myTeamId?.toLowerCase()
-            )
-            if (myTeam?.won === true) wins++
+            const teams = match?.teams ?? {}
+            const myTeamId = String(me.team || '').toLowerCase()
+            const myTeam = teams[myTeamId]
+            if (myTeam?.has_won === true || myTeam?.won === true) wins++
           }
 
           if (matchCount > 0) {

@@ -155,7 +155,6 @@ export default function ValorantCard({ gp, isPreview = false, cardBlur = 16, ani
   const [rankC1] = getRankColors(slug)
   const pad = isPreview ? '10px 12px' : '14px 16px'
   const fs = isPreview ? 11 : 13
-
   const stats = [
     { label: 'K/D', value: gp.valKD ?? '—', icon: Crosshair, color: '#f87171' },
     { label: 'WIN%', value: gp.valWinRate ?? '—', icon: TrendingUp, color: '#34d399' },
@@ -176,6 +175,7 @@ export default function ValorantCard({ gp, isPreview = false, cardBlur = 16, ani
         border: `1px solid ${accent}28`,
         borderRadius: 14,
         overflow: 'hidden',
+        minHeight: isPreview ? undefined : 378,
         boxShadow: gp.statCardGlow
           ? `0 0 18px ${accent}20, 0 4px 20px rgba(0,0,0,0.3)`
           : '0 4px 16px rgba(0,0,0,0.25)',
@@ -212,18 +212,22 @@ export default function ValorantCard({ gp, isPreview = false, cardBlur = 16, ani
         </div>
 
         {/* ── Body ───────────────────────────────────────────────────── */}
-        <div style={{ padding: pad }}>
+        <div style={{ padding: isPreview ? pad : '18px', display: 'flex', flexDirection: 'column', gap: isPreview ? 0 : 14 }}>
           {hasStats ? (
             <>
               {/* Rank row */}
               <div style={{
-                display: 'flex', alignItems: 'center', gap: isPreview ? 10 : 14,
-                marginBottom: isPreview ? 9 : 12,
+                display: 'flex', alignItems: 'center', gap: isPreview ? 10 : 16,
+                marginBottom: isPreview ? 9 : 0,
+                padding: isPreview ? 0 : '14px',
+                borderRadius: isPreview ? undefined : 13,
+                background: isPreview ? undefined : `radial-gradient(circle at 24% 22%, ${rankC1}22, transparent 50%), rgba(255,255,255,0.035)`,
+                border: isPreview ? undefined : '1px solid rgba(255,255,255,0.06)',
               }}>
-                <RankBadge tier={gp.valRankTier} size={isPreview ? 38 : 50} />
+                <RankBadge tier={gp.valRankTier} size={isPreview ? 38 : 74} />
                 <div>
                   <div style={{
-                    fontSize: isPreview ? 14 : 19,
+                    fontSize: isPreview ? 14 : 24,
                     fontWeight: 800, color: '#fff',
                     lineHeight: 1.1, letterSpacing: '-0.02em',
                   }}>
@@ -231,7 +235,7 @@ export default function ValorantCard({ gp, isPreview = false, cardBlur = 16, ani
                   </div>
                   {gp.valRR !== null && (
                     <div style={{
-                      fontSize: isPreview ? 11 : 13,
+                      fontSize: isPreview ? 11 : 15,
                       color: rankC1, fontWeight: 600, marginTop: 2,
                     }}>
                       {gp.valRR} RR
@@ -259,18 +263,18 @@ export default function ValorantCard({ gp, isPreview = false, cardBlur = 16, ani
               </div>
 
               {/* Stats grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: isPreview ? 5 : 7 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: isPreview ? 5 : 8 }}>
                 {stats.map(({ label, value, icon: Icon, color }) => (
                   <div key={label} style={{
                     background: 'rgba(255,255,255,0.04)',
                     border: '1px solid rgba(255,255,255,0.05)',
                     borderRadius: 10,
-                    padding: isPreview ? '6px 7px' : '9px 10px',
+                    padding: isPreview ? '6px 7px' : '12px 10px',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
                   }}>
-                    <Icon size={isPreview ? 10 : 12} color={color} strokeWidth={2.5} />
+                    <Icon size={isPreview ? 10 : 14} color={color} strokeWidth={2.5} />
                     <div style={{
-                      fontSize: isPreview ? 13 : 16,
+                      fontSize: isPreview ? 13 : 18,
                       fontWeight: 800, color: '#fff', lineHeight: 1,
                     }}>
                       {value}

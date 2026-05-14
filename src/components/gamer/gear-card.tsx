@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 
 interface GamerProfile {
@@ -15,10 +16,48 @@ interface Props {
   gp: GamerProfile; isPreview?: boolean; cardBlur?: number; animDelay?: number
 }
 
-// Admin-placed PNGs in /public/game-icons/
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+function GearImage({ type, name, size = 28, mode = 'icon' }: { type: string; name?: string; size: number; mode?: 'icon' | 'hero' }) {
+  const candidates = [
+    name ? `/gear-images/${type}-${slugify(name)}.png` : '',
+    `/gear-images/gear-${type}.png`,
+    `/gear-images/${type}.png`,
+  ].filter(Boolean)
+  const [index, setIndex] = useState(0)
+  if (index >= candidates.length) return null
+  const src = candidates[index]
+
+  if (!src) return null
+
+  return (
+    <img
+      src={src}
+      alt={name || type}
+      width={size}
+      height={size}
+      style={{
+        width: mode === 'hero' ? '100%' : size,
+        height: mode === 'hero' ? '100%' : size,
+        objectFit: 'contain',
+        display: 'block',
+        filter: mode === 'hero' ? 'drop-shadow(0 18px 28px rgba(0,0,0,0.38))' : undefined,
+      }}
+      onError={() => {
+        setIndex(index + 1)
+      }}
+    />
+  )
+}
+
+// Admin-placed PNGs in /public/gear-images/
 // Falls back to a simple category icon shape
-function GearIcon({ type, size = 28 }: { type: string; size: number }) {
-  const src = `/game-icons/gear-${type}.png`
+function GearIcon({ type, name, size = 28 }: { type: string; name?: string; size: number }) {
   // SVG fallback shapes per category
   const fallback: Record<string, JSX.Element> = {
     mouse: (
@@ -61,18 +100,10 @@ function GearIcon({ type, size = 28 }: { type: string; size: number }) {
 
   return (
     <div style={{ width: size, height: size, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <img
-        src={src} alt={type} width={size} height={size}
-        style={{ objectFit: 'contain', display: 'block' }}
-        onError={e => {
-          e.currentTarget.style.display = 'none'
-          const fb = e.currentTarget.nextElementSibling as HTMLElement | null
-          if (fb) fb.style.display = 'flex'
-        }}
-      />
-      <div style={{ display: 'none', position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center', display: 'flex', opacity: 0.75 }}>
         {fallback[type] ?? null}
       </div>
+      <GearImage type={type} name={name} size={size} />
     </div>
   )
 }
@@ -83,7 +114,7 @@ export default function GearCard({ gp, isPreview = false, cardBlur = 16, animDel
   const accent = gp.statCardAccent || '#ff4655'
   const bg     = gp.statCardBg || 'rgba(255,255,255,0.06)'
   const fs     = isPreview ? 11 : 13
-  const iconSz = isPreview ? 26 : 34
+  const iconSz = isPreview ? 26 : 38
 
   const items = [
     gp.mouse    && { type: 'mouse',    name: gp.mouse,    detail: [gp.mouseDpi && `${gp.mouseDpi} DPI`, gp.mouseSens && `${gp.mouseSens} Sen`].filter(Boolean).join(' · ') },
@@ -95,7 +126,7 @@ export default function GearCard({ gp, isPreview = false, cardBlur = 16, animDel
 
   if (items.length === 0) return null
 
-  const pad = isPreview ? '10px 12px' : '14px 16px'
+  const pad = isPreview ? '10px 12px' : '18px'
 
   return (
     <motion.div
@@ -111,6 +142,7 @@ export default function GearCard({ gp, isPreview = false, cardBlur = 16, animDel
         border: '1px solid rgba(255,255,255,0.08)',
         borderRadius: 14,
         overflow: 'hidden',
+        minHeight: isPreview ? undefined : 378,
         boxShadow: gp.statCardGlow
           ? `0 0 18px ${accent}15, 0 4px 16px rgba(0,0,0,0.22)`
           : '0 4px 16px rgba(0,0,0,0.2)',
@@ -160,23 +192,25 @@ export default function GearCard({ gp, isPreview = false, cardBlur = 16, animDel
         </div>
 
         {/* Items */}
-        <div style={{ padding: pad, display: 'flex', flexDirection: 'column', gap: isPreview ? 5 : 7 }}>
+        <div style={{ padding: pad, display: 'flex', flexDirection: 'column', gap: isPreview ? 5 : 10 }}>
           {items.map(item => (
             <div key={item.type} style={{
               display: 'flex', alignItems: 'center', gap: isPreview ? 8 : 11,
-              padding: isPreview ? '5px 8px' : '8px 10px',
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.05)',
-              borderRadius: 9,
+              padding: isPreview ? '5px 8px' : '12px',
+              minHeight: isPreview ? undefined : 62,
+              background: `linear-gradient(135deg, rgba(255,255,255,0.052), ${accent}08)`,
+              border: '1px solid rgba(255,255,255,0.06)',
+              borderRadius: 12,
             }}>
               {/* Icon */}
               <div style={{
-                width: iconSz, height: iconSz, borderRadius: isPreview ? 7 : 9,
-                background: 'rgba(255,255,255,0.06)',
+                width: iconSz, height: iconSz, borderRadius: isPreview ? 7 : 10,
+                background: 'linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03))',
+                border: '1px solid rgba(255,255,255,0.055)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0,
               }}>
-                <GearIcon type={item.type} size={iconSz * 0.72} />
+                <GearIcon type={item.type} name={item.name} size={iconSz * 0.72} />
               </div>
 
               {/* Text */}

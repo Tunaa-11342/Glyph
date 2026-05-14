@@ -462,8 +462,9 @@ function SideGamerCards({ gp, cardBlur, side, compact = false }: { gp: any; card
       transition={{ delay: side === 'left' ? 0.24 : 0.3, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       whileHover={compact ? undefined : { rotateY: side === 'left' ? 8 : -8, y: -4 }}
       style={{
-        width: compact ? '100%' : 320,
-        maxWidth: 'calc(100vw - 48px)',
+        width: compact ? '100%' : 'min(400px, calc((100vw - 92px) / 3))',
+        minWidth: compact ? undefined : 340,
+        maxWidth: compact ? 'calc(100vw - 48px)' : 400,
         order: compact ? (side === 'right' ? 2 : 3) : (side === 'left' ? 1 : 3),
         scrollSnapAlign: compact ? 'center' : undefined,
         flexShrink: compact ? 0 : undefined,
@@ -539,7 +540,7 @@ export default function ProfileRenderer({ settings: s, user, links, gamerProfile
 
   useEffect(() => {
     if (isPreview) return
-    const media = window.matchMedia('(max-width: 900px)')
+    const media = window.matchMedia('(max-width: 1180px)')
     const sync = () => setCompactProfile(media.matches)
     sync()
     media.addEventListener('change', sync)
@@ -740,7 +741,7 @@ export default function ProfileRenderer({ settings: s, user, links, gamerProfile
         flexWrap: showMobileCarousel ? 'nowrap' : !isPreview && hasGamerCards && !compactProfile ? 'wrap' : 'nowrap',
         alignItems: !isPreview && hasGamerCards && !compactProfile ? 'center' : showMobileCarousel ? 'center' : align,
         justifyContent: showMobileCarousel ? 'flex-start' : 'center',
-        gap: showMobileCarousel ? 16 : !isPreview && hasGamerCards && !compactProfile ? 22 : 0,
+        gap: showMobileCarousel ? 16 : !isPreview && hasGamerCards && !compactProfile ? 28 : 0,
         perspective: !isPreview && hasGamerCards && !compactProfile ? '1600px' : undefined,
         padding: showMobileCarousel ? '24px max(24px, calc((100vw - 400px) / 2)) 70px' : isPreview ? '16px' : '24px',
         overflowY: showMobileCarousel ? 'hidden' : 'auto',
