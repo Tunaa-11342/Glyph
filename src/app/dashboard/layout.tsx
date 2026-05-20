@@ -91,7 +91,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="h-4 w-4 rounded-md bg-violet-300" />
           </div>
           <div>
-            <div className="text-lg font-bold tracking-tight">BioSite</div>
+            <div className="text-lg font-bold tracking-tight">Glyph</div>
             <div className="text-xs text-white/35">Creator studio</div>
           </div>
         </div>
@@ -165,7 +165,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="sticky top-0 z-40 border-b border-white/10 bg-[#090a0d]/95 px-4 py-3 backdrop-blur md:hidden">
           <div className="mb-3 flex items-center justify-between">
-            <div className="font-bold">BioSite</div>
+            <div className="font-bold">Glyph</div>
             <UserButton />
           </div>
           <div className="flex gap-2 overflow-x-auto pb-1">

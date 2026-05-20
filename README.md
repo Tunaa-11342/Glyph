@@ -1,6 +1,6 @@
-# BioSite
+# Glyph
 
-BioSite is a customizable personal profile site builder. Think link-in-bio, but with a proper dashboard, public profile pages, theme controls, analytics, audio, and a couple of gamer-focused cards for Valorant stats and gear setup.
+Glyph is a customizable personal profile site builder. Think link-in-bio, but with a proper dashboard, public profile pages, theme controls, analytics, audio, and a couple of gamer-focused cards for Valorant stats and gear setup.
 
 It is still a work in progress, but the core loop is already here: sign in, set up your profile, customize the page, add links, and share `/u/yourname`.
 
@@ -43,6 +43,6 @@ These are the important variables used by the app:
 
 ## Current Status
 
-BioSite is actively being shaped. The dashboard, customize studio, public profile renderer, Valorant card, and gear card are the main areas getting polished right now.
+Glyph is actively being shaped. The dashboard, customize studio, public profile renderer, Valorant card, and gear card are the main areas getting polished right now.
 
 There is no big fake roadmap here. The goal is simple: keep the profile page flexible, make the dashboard easier to use, and avoid letting the UI turn into a pile of random styles.

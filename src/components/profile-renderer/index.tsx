@@ -958,7 +958,7 @@ export default function ProfileRenderer({ settings: s, user, links, gamerProfile
           {/* Branding */}
           <motion.div {...getAnim(0.85)} style={{ marginTop: isPreview ? 12 : 16 }}>
             <a href="/" style={{ fontSize: 10, color: `${usernameClr}18`, textDecoration: 'none' }}>
-              made with BioSite
+              made with Glyph
             </a>
           </motion.div>
         </motion.div>

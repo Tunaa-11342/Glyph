@@ -426,7 +426,7 @@ export default function CustomizePage() {
                         padding: '2px 8px', fontSize: 9, color: 'rgba(255,255,255,0.2)',
                         maxWidth: 140, margin: '0 auto',
                       }}>
-                        biosite.app/u/{profile?.username || 'you'}
+                        glyph.app/u/{profile?.username || 'you'}
                       </div>
                     </div>
 

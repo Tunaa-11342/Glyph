@@ -1,4 +1,4 @@
-# BioSite — Admin Game Icons
+# Glyph - Admin Game Icons
 
 Place transparent PNG icons in this folder.
 They are served at: /game-icons/[filename]

@@ -66,8 +66,8 @@ export async function generateMetadata({ params }: Props) {
   if (!profile) return { title: 'Not Found' }
 
   return {
-    title: `${profile.displayName || profile.username} | BioSite`,
-    description: profile.bio || `Check out ${profile.username}'s profile on BioSite`,
+    title: `${profile.displayName || profile.username} | Glyph`,
+    description: profile.bio || `Check out ${profile.username}'s profile on Glyph`,
     openGraph: {
       title: profile.displayName || profile.username,
       description: profile.bio || '',

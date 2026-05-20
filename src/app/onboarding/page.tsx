@@ -68,7 +68,7 @@ export default function OnboardingPage() {
           <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
             <Zap size={16} className="text-white" />
           </div>
-          <span className="font-display font-bold text-lg">BioSite</span>
+          <span className="font-display font-bold text-lg">Glyph</span>
         </div>
 
         <h1 className="text-4xl font-display font-bold mb-2">Set up your page</h1>
@@ -116,7 +116,7 @@ export default function OnboardingPage() {
               )}
             </div>
             <p className="mt-1 text-xs text-white/30">
-              biosite.app/u/{username || 'yourname'}
+              glyph.app/u/{username || 'yourname'}
             </p>
           </div>
 

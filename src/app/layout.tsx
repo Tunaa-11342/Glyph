@@ -21,14 +21,14 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'BioSite — Your Personal Link Hub',
-    template: '%s | BioSite',
+    default: 'Glyph - Your Personal Link Hub',
+    template: '%s | Glyph',
   },
   description: 'Create your own mini personal site. Share links, music, and personality.',
   keywords: ['bio link', 'link in bio', 'personal site', 'profile page'],
   openGraph: {
     type: 'website',
-    siteName: 'BioSite',
+    siteName: 'Glyph',
   },
 }
 

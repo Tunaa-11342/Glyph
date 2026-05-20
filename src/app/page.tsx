@@ -1,246 +1,168 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { useUser } from '@clerk/nextjs'
-import { motion } from 'framer-motion'
-import { ArrowRight, Zap, Palette, BarChart3, Music, Globe, Star } from 'lucide-react'
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { motion } from "framer-motion";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { FormEvent, useState } from "react";
+
+const navItems = [
+  { label: "Product", href: "/" },
+  { label: "Features", href: "/features" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "FAQ", href: "/faq" },
+];
+
+const heroCards = [
+  { className: "left-[3%] top-[26%] h-[220px] w-[168px] -rotate-[11deg] opacity-45 blur-[0.2px]", y: [0, -18, 0], d: 5.8 },
+  { className: "left-[20%] top-[36%] h-[270px] w-[205px] -rotate-[5deg]", y: [0, 16, 0], d: 6.4 },
+  { className: "left-1/2 top-[20%] h-[330px] w-[250px] -translate-x-1/2 rotate-[1deg] scale-110", y: [0, -22, 0], d: 7 },
+  { className: "right-[20%] top-[36%] h-[270px] w-[205px] rotate-[6deg]", y: [0, 14, 0], d: 6.2 },
+  { className: "right-[3%] top-[26%] h-[220px] w-[168px] rotate-[11deg] opacity-45 blur-[0.2px]", y: [0, -16, 0], d: 5.6 },
+];
 
 export default function HomePage() {
-  const { isSignedIn } = useUser()
+  const { isSignedIn } = useUser();
+  const router = useRouter();
+  const [handle, setHandle] = useState("");
+
+  const submitHandle = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const username = handle.trim().replace(/^@+/, "").toLowerCase();
+    router.push(username ? `/sign-up?claim=${encodeURIComponent(username)}` : "/sign-up");
+  };
 
   return (
-    <div className="min-h-screen bg-surface overflow-hidden">
-      {/* Ambient blobs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div
-          className="absolute -top-40 -right-40 w-96 h-96 rounded-full opacity-20 blur-3xl"
-          style={{ background: 'radial-gradient(circle, #8b5cf6, transparent)' }}
-        />
-        <div
-          className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full opacity-10 blur-3xl"
-          style={{ background: 'radial-gradient(circle, #c084fc, transparent)' }}
-        />
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-5 blur-3xl"
-          style={{ background: 'radial-gradient(circle, #7c3aed, transparent)' }}
-        />
-      </div>
+    <main className="min-h-screen overflow-hidden bg-[#050509] text-white">
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(115deg,rgba(255,68,90,0.12)_0%,transparent_26%,rgba(244,174,66,0.11)_48%,transparent_68%,rgba(124,92,255,0.1)_100%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),transparent_18%,rgba(255,255,255,0.025)_58%,transparent_100%)]" />
 
-      {/* Nav */}
-      <nav className="relative z-10 flex items-center justify-between px-6 py-5 max-w-6xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
-            <Zap size={16} className="text-white" />
+      <nav className="fixed left-0 right-0 top-0 z-50 px-4 py-4 sm:px-7">
+        <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/10 bg-[#08080d]/72 px-4 py-3 shadow-[0_22px_80px_rgba(0,0,0,0.42)] backdrop-blur-2xl">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="relative h-8 w-8">
+              <span className="absolute left-1 top-1 h-6 w-3 -rotate-12 rounded-[0.35rem] bg-white" />
+              <span className="absolute right-1 top-1 h-6 w-3 rotate-12 rounded-[0.35rem] bg-white/75" />
+            </div>
+            <span className="text-sm font-bold tracking-tight">Glyph</span>
+          </Link>
+
+          <div className="hidden items-center gap-1 text-xs text-white/48 md:flex">
+            {navItems.map((item) => (
+              <Link key={item.href} href={item.href} className="rounded-full px-4 py-2 transition hover:bg-white/[0.07] hover:text-white">
+                {item.label}
+              </Link>
+            ))}
           </div>
-          <span className="font-display font-bold text-lg tracking-tight">BioSite</span>
-        </div>
-        <div className="flex items-center gap-3">
-          {isSignedIn ? (
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-white text-sm font-medium hover:bg-purple-500 transition-colors"
-            >
-              Dashboard <ArrowRight size={14} />
-            </Link>
-          ) : (
-            <>
-              <Link
-                href="/sign-in"
-                className="px-4 py-2 text-sm text-white/60 hover:text-white transition-colors"
-              >
-                Sign In
+
+          <div className="flex items-center gap-2">
+            {isSignedIn ? (
+              <Link href="/dashboard" className="rounded-full bg-white px-4 py-2 text-xs font-bold text-black transition hover:bg-white/90">
+                Dashboard
               </Link>
-              <Link
-                href="/sign-up"
-                className="px-4 py-2 rounded-xl bg-accent text-white text-sm font-medium hover:bg-purple-500 transition-colors"
-              >
-                Get Started Free
-              </Link>
-            </>
-          )}
+            ) : (
+              <>
+                <Link href="/sign-in" className="hidden rounded-full px-4 py-2 text-xs font-semibold text-white/58 transition hover:text-white sm:block">
+                  Login
+                </Link>
+                <Link href="/sign-up" className="rounded-full bg-white px-4 py-2 text-xs font-bold text-black transition hover:bg-white/90">
+                  Signup
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative z-10 text-center pt-24 pb-20 px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-white/60 mb-8">
-            <Star size={12} className="text-accent" />
-            <span>Your personal site engine</span>
-          </div>
+      <section className="relative flex min-h-screen flex-col overflow-hidden px-4 pb-0 pt-28 sm:px-7 lg:pt-32">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[58vh] bg-[linear-gradient(180deg,rgba(255,255,255,0.09),transparent_72%)]" />
+        <div className="pointer-events-none absolute left-0 right-0 top-[22%] h-40 bg-[linear-gradient(90deg,transparent,rgba(255,65,91,0.22),rgba(255,186,68,0.16),rgba(114,105,255,0.16),transparent)] blur-3xl" />
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[44vh] bg-[linear-gradient(180deg,transparent,rgba(255,66,88,0.09)_28%,rgba(255,179,70,0.08)_48%,#050509_100%)]" />
 
-          <h1 className="text-6xl md:text-8xl font-display font-bold tracking-tight mb-6 leading-[0.95]">
-            One link.{' '}
-            <span className="accent-gradient-text">Infinite</span>
-            <br />
-            personality.
-          </h1>
+        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col items-center text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.045] px-4 py-2 text-xs font-medium text-white/58 backdrop-blur-xl"
+          >
+            <Sparkles size={13} className="text-amber-200" />
+            Personal pages with real presence
+          </motion.div>
 
-          <p className="text-lg text-white/50 max-w-xl mx-auto mb-10 leading-relaxed">
-            Build a stunning personal profile page with custom themes, background music, link management, and real-time analytics. Not just a link-in-bio — your mini personal site.
-          </p>
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08, duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-7 max-w-6xl font-display text-[clamp(3.4rem,10vw,9.5rem)] font-medium leading-[0.82] tracking-[-0.078em]"
+          >
+            Make your profile
+            <span className="block bg-[linear-gradient(92deg,#fff_0%,#ffd7a1_34%,#ff5f82_67%,#d8d2ff_100%)] bg-clip-text text-transparent">
+              impossible to ignore.
+            </span>
+          </motion.h1>
 
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            <Link
-              href="/sign-up"
-              className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-accent text-white font-semibold hover:bg-purple-500 transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(139,92,246,0.4)]"
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-7 max-w-2xl text-sm leading-7 text-white/52 sm:text-base"
+          >
+            One public page for your links, style, music, analytics, gamer stats, and setup.
+          </motion.p>
+
+          <motion.form
+            onSubmit={submitHandle}
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-8 flex w-full max-w-2xl flex-col gap-2 rounded-[1.45rem] border border-white/12 bg-black/32 p-2 shadow-[0_24px_90px_rgba(0,0,0,0.35)] backdrop-blur-2xl sm:flex-row"
+          >
+            <label className="flex min-h-12 flex-1 items-center rounded-2xl bg-white/[0.055] px-4 text-left text-sm text-white/42">
+              <span className="shrink-0 text-white/62">glyph.io/</span>
+              <input
+                value={handle}
+                onChange={(event) => setHandle(event.target.value)}
+                placeholder="username"
+                className="min-w-0 flex-1 bg-transparent px-1 text-white outline-none placeholder:text-white/24"
+                aria-label="Choose your Glyph username"
+              />
+            </label>
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-bold text-black transition hover:-translate-y-0.5 hover:bg-white/90"
             >
-              Create your page <ArrowRight size={16} />
-            </Link>
-            <Link
-              href="/u/demo"
-              className="flex items-center gap-2 px-6 py-3 rounded-2xl border border-white/10 text-white/70 font-medium hover:bg-white/5 hover:text-white transition-all"
-            >
-              View demo
-            </Link>
-          </div>
-        </motion.div>
+              Start today
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-white">
+                <ArrowRight size={13} />
+              </span>
+            </button>
+          </motion.form>
 
-        {/* Preview mockup */}
-        <motion.div
-          initial={{ opacity: 0, y: 60, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-20 max-w-4xl mx-auto"
-        >
-          <div className="relative rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-            <div className="flex items-center gap-2 px-4 py-3 bg-surface-2 border-b border-white/6">
-              <div className="flex gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-red-500/60" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
-                <div className="w-3 h-3 rounded-full bg-green-500/60" />
+          <motion.div
+            initial={{ opacity: 0, y: 42, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.38, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            className="relative mt-auto h-[310px] w-full max-w-6xl sm:h-[390px] lg:h-[430px]"
+          >
+            <div className="absolute inset-x-[-12%] bottom-[-36px] h-56 bg-[linear-gradient(90deg,transparent,rgba(255,70,90,0.24),rgba(255,185,75,0.22),rgba(135,119,255,0.18),transparent)] blur-3xl" />
+            <div className="absolute inset-x-[12%] bottom-[-28px] h-20 bg-white/10 blur-3xl" />
+            {heroCards.map((slot, index) => (
+              <div key={index} className={`absolute ${slot.className}`}>
+                <motion.div
+                  animate={{ y: slot.y }}
+                  transition={{ duration: slot.d, repeat: Infinity, ease: "easeInOut", delay: index * 0.18 }}
+                  className="relative h-full w-full overflow-hidden rounded-[1.6rem] border border-white/14 bg-[linear-gradient(145deg,rgba(255,255,255,0.13),rgba(255,255,255,0.035))] shadow-[0_32px_110px_rgba(0,0,0,0.6)] backdrop-blur-xl"
+                >
+                  <div className="absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.16),transparent_42%,rgba(255,255,255,0.08))]" />
+                  <img src="/landing/blank-card.png" alt="" className="relative h-full w-full object-cover" draggable={false} />
+                </motion.div>
               </div>
-              <div className="flex-1 mx-4">
-                <div className="bg-surface-3 rounded-md px-3 py-1 text-xs text-white/30 text-center max-w-48 mx-auto">
-                  biosite.app/u/yourname
-                </div>
-              </div>
-            </div>
-            <div
-              className="relative h-80 flex flex-col items-center justify-center gap-4"
-              style={{ background: 'linear-gradient(135deg, #0d0d1a 0%, #0a0a14 100%)' }}
-            >
-              {/* Ambient glow */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-64 h-64 rounded-full blur-3xl opacity-20" style={{ background: '#8b5cf6' }} />
-              </div>
-              <div className="relative z-10 text-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-purple-900 mx-auto mb-3 ring-2 ring-white/10" />
-                <div className="font-display font-bold text-xl mb-1">yourname</div>
-                <div className="text-white/40 text-sm mb-5">✨ your bio goes here</div>
-                <div className="flex flex-col gap-2 w-56 mx-auto">
-                  {['🐦 Twitter', '📸 Instagram', '🎵 Spotify'].map((label, i) => (
-                    <div
-                      key={i}
-                      className="rounded-xl py-2.5 text-sm font-medium text-center"
-                      style={{
-                        background: 'rgba(139,92,246,0.15)',
-                        border: '1px solid rgba(139,92,246,0.3)',
-                      }}
-                    >
-                      {label}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Features */}
-      <section className="relative z-10 max-w-6xl mx-auto px-6 py-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl font-display font-bold mb-4">Everything you need</h2>
-          <p className="text-white/40 text-lg">Built for creators, streamers, and everyone in between.</p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[
-            {
-              icon: Palette,
-              title: 'Full Customization',
-              desc: 'Custom colors, fonts, backgrounds, gradients, blur effects, and particle animations.',
-            },
-            {
-              icon: Music,
-              title: 'Background Music',
-              desc: 'Add ambient music that autoplays when visitors land on your page. Volume control included.',
-            },
-            {
-              icon: Globe,
-              title: 'Link Management',
-              desc: 'Drag-and-drop link ordering, custom icons, click tracking, and enable/disable toggles.',
-            },
-            {
-              icon: BarChart3,
-              title: 'Real Analytics',
-              desc: 'View counts, device breakdown, browser stats, geographic data, and link click tracking.',
-            },
-            {
-              icon: Zap,
-              title: 'Instant Preview',
-              desc: 'Real-time preview as you customize. See every change instantly without saving.',
-            },
-            {
-              icon: Star,
-              title: 'Mini Personal Site',
-              desc: 'Not just a link-in-bio. A complete mini personal site engine with your own URL.',
-            },
-          ].map((feature, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="glass glass-hover rounded-2xl p-6"
-            >
-              <div className="w-10 h-10 rounded-xl bg-accent-dim flex items-center justify-center mb-4">
-                <feature.icon size={20} className="text-accent" />
-              </div>
-              <h3 className="font-display font-semibold mb-2">{feature.title}</h3>
-              <p className="text-white/40 text-sm leading-relaxed">{feature.desc}</p>
-            </motion.div>
-          ))}
+            ))}
+          </motion.div>
         </div>
       </section>
-
-      {/* CTA */}
-      <section className="relative z-10 max-w-2xl mx-auto px-6 py-24 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-5xl font-display font-bold mb-6">
-            Ready to stand out?
-          </h2>
-          <p className="text-white/40 mb-8">
-            Create your free personal page in under 2 minutes.
-          </p>
-          <Link
-            href="/sign-up"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-accent text-white font-semibold text-lg hover:bg-purple-500 transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(139,92,246,0.4)]"
-          >
-            Start for free <ArrowRight size={18} />
-          </Link>
-        </motion.div>
-      </section>
-
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/6 py-8 px-6 text-center text-white/30 text-sm">
-        <p>© 2025 BioSite. Built with ❤️</p>
-      </footer>
-    </div>
-  )
+    </main>
+  );
 }

@@ -1,5 +1,5 @@
 {
-  "_readme": "BioSite Gear Database — Admin file. Add gear items here. Users select from this list.",
+  "_readme": "Glyph Gear Database - Admin file. Add gear items here. Users select from this list.",
   "_format": {
     "id": "unique-slug (lowercase, hyphens)",
     "name": "Display Name",
