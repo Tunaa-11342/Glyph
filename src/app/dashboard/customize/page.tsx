@@ -712,12 +712,24 @@ function ImageUploader({ label, value, onChange, accept = 'image/*' }: {
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
   const [loading, setLoading] = useState(false)
+  const isVideo = accept.startsWith('video')
 
-  const handleFile = (file: File) => {
+  const handleFile = async (file: File) => {
     setLoading(true)
-    const reader = new FileReader()
-    reader.onload = e => { onChange(e.target?.result as string); setLoading(false) }
-    reader.readAsDataURL(file)
+    try {
+      const form = new FormData()
+      form.append('file', file)
+      form.append('scope', accept.startsWith('video') ? 'background-video' : 'profile-media')
+      const res = await fetch('/api/upload', { method: 'POST', body: form })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok || !data.url) throw new Error(data.error || 'Upload failed')
+      onChange(data.url)
+      toast.success('Uploaded')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -727,14 +739,18 @@ function ImageUploader({ label, value, onChange, accept = 'image/*' }: {
         onClick={() => inputRef.current?.click()}
         onDragOver={e => { e.preventDefault(); setDragging(true) }}
         onDragLeave={() => setDragging(false)}
-        onDrop={e => { e.preventDefault(); setDragging(false); const f = e.dataTransfer.files[0]; if (f) handleFile(f) }}
+        onDrop={e => { e.preventDefault(); setDragging(false); const f = e.dataTransfer.files[0]; if (f) void handleFile(f) }}
         className={`relative w-full rounded-2xl border-2 border-dashed cursor-pointer overflow-hidden transition-all ${dragging ? 'border-purple-500 bg-purple-500/10' : 'border-white/10 hover:border-white/25 bg-white/[0.02] hover:bg-white/[0.04]'
           }`}
         style={{ minHeight: value ? 120 : 80 }}
       >
         {value ? (
           <>
-            <img src={value} alt="" className="w-full object-cover" style={{ maxHeight: 140 }} />
+            {isVideo ? (
+              <video src={value} muted playsInline className="w-full object-cover" style={{ maxHeight: 140 }} />
+            ) : (
+              <img src={value} alt="" className="w-full object-cover" style={{ maxHeight: 140 }} />
+            )}
             <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
               <Upload size={18} className="text-white" />
               <span className="text-xs text-white/80">Click to change</span>
@@ -753,7 +769,7 @@ function ImageUploader({ label, value, onChange, accept = 'image/*' }: {
           </div>
         )}
         <input ref={inputRef} type="file" accept={accept} className="hidden"
-          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f) }} />
+          onChange={e => { const f = e.target.files?.[0]; if (f) void handleFile(f) }} />
       </div>
       {value && (
         <button onClick={() => onChange('')} className="mt-1.5 text-[11px] text-red-400/50 hover:text-red-400 flex items-center gap-1 transition-colors">
@@ -892,14 +908,22 @@ function ColorsTab({ settings, update }: {
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
 
-  const handleAvatarFile = (file: File) => {
+  const handleAvatarFile = async (file: File) => {
     setUploadingAvatar(true)
-    const reader = new FileReader()
-    reader.onload = e => {
-      update('avatarUrl', e.target?.result as string)
+    try {
+      const form = new FormData()
+      form.append('file', file)
+      form.append('scope', 'avatar')
+      const res = await fetch('/api/upload', { method: 'POST', body: form })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok || !data.url) throw new Error(data.error || 'Upload failed')
+      update('avatarUrl', data.url)
+      toast.success('Avatar uploaded')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
       setUploadingAvatar(false)
     }
-    reader.readAsDataURL(file)
   }
 
   const avatarSrc = (settings as any).avatarUrl
@@ -950,7 +974,7 @@ function ColorsTab({ settings, update }: {
           </div>
           <input
             ref={inputRef} type="file" accept="image/*" className="hidden"
-            onChange={e => { const f = e.target.files?.[0]; if (f) handleAvatarFile(f) }}
+            onChange={e => { const f = e.target.files?.[0]; if (f) void handleAvatarFile(f) }}
           />
         </div>
       </div>
@@ -1037,7 +1061,7 @@ function BackgroundTab({ settings, update }: {
       )}
       {settings.bgType === 'video' && (
         <div className="space-y-3">
-          <ImageUploader label="Background Video" value={null} onChange={v => update('bgVideo', v)} accept="video/*" />
+          <ImageUploader label="Background Video" value={settings.bgVideo || null} onChange={v => update('bgVideo', v)} accept="video/*" />
           <p className="text-[11px] text-white/25">Supports MP4, WebM. Will loop & autoplay muted.</p>
         </div>
       )}
