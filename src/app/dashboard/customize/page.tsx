@@ -1074,6 +1074,29 @@ function BackgroundTab({ settings, update }: {
 function AudioTab({ settings, update }: {
   settings: ProfileSettings; update: (k: keyof ProfileSettings, v: unknown) => void
 }) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+
+  const handleAudioFile = async (file: File) => {
+    setUploading(true)
+    try {
+      const form = new FormData()
+      form.append('file', file)
+      form.append('scope', 'audio')
+      const res = await fetch('/api/upload', { method: 'POST', body: form })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok || !data.url) throw new Error(data.error || 'Upload failed')
+      update('audioUrl', data.url)
+      update('audioName', file.name.replace(/\.[^/.]+$/, ''))
+      update('audioAutoplay', true)
+      toast.success('Music uploaded')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
+      setUploading(false)
+    }
+  }
+
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
@@ -1087,12 +1110,34 @@ function AudioTab({ settings, update }: {
       </div>
 
       <div>
-        <SectionLabel>Audio URL</SectionLabel>
-        <input type="url" value={settings.audioUrl || ''} onChange={e => update('audioUrl', e.target.value)}
-          placeholder="https://example.com/music.mp3"
-          style={{ width: "100%", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 11, padding: "9px 13px", fontSize: 12, color: "rgba(255,255,255,0.78)", outline: "none" }}
+        <SectionLabel>Upload Music</SectionLabel>
+        <button
+          onClick={() => inputRef.current?.click()}
+          disabled={uploading}
+          className="w-full py-3 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] disabled:opacity-60 text-white/60 hover:text-white transition-all flex items-center justify-center gap-2"
+        >
+          {uploading
+            ? <span className="w-4 h-4 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+            : <Upload size={13} />
+          }
+          {uploading ? 'Uploading...' : 'Choose audio from device'}
+        </button>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="audio/*"
+          className="hidden"
+          onChange={e => { const f = e.target.files?.[0]; if (f) void handleAudioFile(f) }}
         />
-        <p className="text-[10px] text-white/20 mt-1">Supports .mp3, .ogg, .wav</p>
+        <p className="text-[10px] text-white/20 mt-1">Supports MP3, OGG, WAV, M4A, and browser-playable audio files.</p>
+        {settings.audioUrl && (
+          <button
+            onClick={() => { update('audioUrl', null); update('audioName', null); update('audioAutoplay', false) }}
+            className="mt-2 text-[11px] text-red-400/50 hover:text-red-400 flex items-center gap-1 transition-colors"
+          >
+            <X size={10} /> Remove music
+          </button>
+        )}
       </div>
 
       <div>

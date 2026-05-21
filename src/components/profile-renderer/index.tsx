@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Volume2, VolumeX, Play, Pause } from 'lucide-react'
+import { Volume2, VolumeX } from 'lucide-react'
 import type { ProfileSettings, LinkItem } from '@/types'
 import ValorantCard from '@/components/gamer/valorant-card'
 import GearCard from '@/components/gamer/gear-card'
@@ -530,7 +530,6 @@ function SwipeHint({ active, total }: { active: number; total: number }) {
 
 export default function ProfileRenderer({ settings: s, user, links, gamerProfile, isPreview = false, onLinkClick }: Props) {
   const [audioPlaying, setAudioPlaying] = useState(false)
-  const [audioReady, setAudioReady] = useState(false)
   const [muted, setMuted] = useState(false)
   const [compactProfile, setCompactProfile] = useState(false)
   const [mobileCardIndex, setMobileCardIndex] = useState(0)
@@ -564,18 +563,11 @@ export default function ProfileRenderer({ settings: s, user, links, gamerProfile
     const audio = audioRef.current
     audio.volume = s.audioVolume ?? 0.5; audio.loop = true
     const onReady = () => {
-      setAudioReady(true)
       if (s.audioAutoplay) audio.play().then(() => setAudioPlaying(true)).catch(() => { })
     }
     audio.addEventListener('canplaythrough', onReady)
     return () => audio.removeEventListener('canplaythrough', onReady)
   }, [s.audioUrl, s.audioVolume, s.audioAutoplay, isPreview])
-
-  const toggleAudio = () => {
-    if (!audioRef.current) return
-    if (audioPlaying) { audioRef.current.pause(); setAudioPlaying(false) }
-    else audioRef.current.play().then(() => setAudioPlaying(true)).catch(() => { })
-  }
 
   /* Derived values */
   const accent = s.accentColor || '#8b5cf6'
@@ -904,57 +896,6 @@ export default function ProfileRenderer({ settings: s, user, links, gamerProfile
             )}
           </div>
 
-          {/* Audio player inside card */}
-          {s.audioUrl && (
-            <motion.div {...getAnim(0.55)} style={{ marginTop: isPreview ? 10 : 14, width: '100%' }}>
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: isPreview ? '7px 11px' : '9px 14px',
-                borderRadius: Math.max(radius - 4, 8),
-                background: `rgba(0,0,0,0.3)`,
-                backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
-                border: `1px solid ${accent}30`,
-              }}>
-                {isPreview ? (
-                  <div style={{ width: 26, height: 26, borderRadius: '50%', background: `${accent}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Play size={10} color={accent} />
-                  </div>
-                ) : (
-                  <button onClick={toggleAudio} style={{
-                    width: 30, height: 30, borderRadius: '50%', background: `${accent}30`,
-                    border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                  }}>
-                    {!audioReady
-                      ? <div style={{ width: 13, height: 13, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.2)', borderTopColor: '#fff', animation: 'spin 0.8s linear infinite' }} />
-                      : audioPlaying ? <Pause size={12} color={accent} /> : <Play size={12} color={accent} />}
-                  </button>
-                )}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.8)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', margin: 0 }}>
-                    {s.audioName || 'Background Music'}
-                  </p>
-                  {!isPreview && audioPlaying && (
-                    <div style={{ display: 'flex', gap: 2.5, marginTop: 4, height: 12, alignItems: 'flex-end' }}>
-                      {[1, 2, 3, 4, 5].map(n => (
-                        <div key={n} style={{
-                          width: 3, borderRadius: 2, background: accent, opacity: 0.8,
-                          animation: `waveBar ${0.5 + n * 0.08}s ease-in-out infinite`,
-                          animationDelay: `${n * 0.08}s`,
-                        }} />
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {!isPreview && (
-                  <button onClick={() => { if (audioRef.current) { audioRef.current.muted = !muted; setMuted(p => !p) } }}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', opacity: 0.45, color: '#fff', flexShrink: 0 }}>
-                    {muted ? <VolumeX size={12} /> : <Volume2 size={12} />}
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          )}
-
           {/* Branding */}
           <motion.div {...getAnim(0.85)} style={{ marginTop: isPreview ? 12 : 16 }}>
             <a href="/" style={{ fontSize: 10, color: `${usernameClr}18`, textDecoration: 'none' }}>
@@ -1003,7 +944,17 @@ export default function ProfileRenderer({ settings: s, user, links, gamerProfile
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 1, duration: 0.3 }}
           onClick={() => {
-            if (audioRef.current) { audioRef.current.muted = !muted; setMuted(p => !p) }
+            if (!audioRef.current) return
+            if (!audioPlaying) {
+              audioRef.current.muted = false
+              audioRef.current.play().then(() => {
+                setMuted(false)
+                setAudioPlaying(true)
+              }).catch(() => { })
+              return
+            }
+            audioRef.current.muted = !muted
+            setMuted(p => !p)
           }}
           style={{
             position: 'fixed', bottom: 20, right: 20, zIndex: 50,
@@ -1018,7 +969,7 @@ export default function ProfileRenderer({ settings: s, user, links, gamerProfile
           }}
           whileHover={{ scale: 1.1, background: 'rgba(0,0,0,0.75)' } as any}
           whileTap={{ scale: 0.95 } as any}
-          title={muted ? 'Unmute' : 'Mute'}
+          title={!audioPlaying ? 'Play music' : muted ? 'Unmute' : 'Mute'}
         >
           {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
         </motion.button>

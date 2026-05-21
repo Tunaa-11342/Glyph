@@ -49,8 +49,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'No file provided' }, { status: 400 })
   }
 
-  if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
-    return NextResponse.json({ error: 'Only image and video uploads are supported' }, { status: 400 })
+  if (!file.type.startsWith('image/') && !file.type.startsWith('video/') && !file.type.startsWith('audio/')) {
+    return NextResponse.json({ error: 'Only image, video, and audio uploads are supported' }, { status: 400 })
   }
 
   if (file.size > MAX_FILE_SIZE) {
